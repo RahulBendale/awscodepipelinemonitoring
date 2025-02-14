@@ -1,0 +1,92 @@
+name: DeployCodepipelineEventbridgeMonitoring
+
+on:
+  push:
+    branches: [dev]
+env:
+  TARGET: dev
+  RESOURCE_NAME: my-nonprod-provision
+  AWS_REGION: eu-west-1
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+      - name: Configure AWS credentials from company account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      # - name: Script Permissions
+      #   id: terraform_script_permissions
+      #   run: |
+      #     chmod 700 ./scripts -R
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '20.x'
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+      - name: Install Serverless Framework
+        run: npm install -g serverless
+
+      - name: Install psycopg2 in python
+        run:  pip install psycopg2 -t ./
+
+
+      - name: Setup SSH
+        uses: MrSquaare/ssh-setup-action@v1
+        with:
+            host: github.com
+            private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      # - name: Configure and Run Terraform state management prerequideves
+      #   id: terraform_run_state
+      #   run: ./init_state_management.sh ${{ env.RESOURCE_NAME }} ${{ env.AWS_REGION }}
+      #   working-directory: ./scripts
+      #
+      - name: Transform Infrastructure Values
+        id: transform_infrastructure_values
+        run: |
+          sed -i "s|{{AWS_REGION}}|${{ env.AWS_REGION }}|g" iac/*.tf
+          sed -i "s|{{RESOURCE_NAME}}|${{ env.RESOURCE_NAME }}|g" iac/*.tf
+          sed -i "s|{{ENVIRONMENT_NAME}}|${{ env.TARGET }}|g" iac/*.tf
+      - name: "Terraform Init"
+        id: terraform_init
+        run: terraform init
+        working-directory: ./iac
+      - name: "Terraform Plan"
+        id: terraform_plan
+        run: terraform plan
+        working-directory: ./iac
+      - name: "Terraform Apply"
+        id: terraform_apply
+        run: terraform apply -auto-approve
+        working-directory: ./iac
+
+      - name: Navigate to Serverless Service Directory
+        run: cd /home/runner/work/AWS-CodePipeline-eventbridge/AWS-CodePipeline-eventbridge
+      
+
+      - name: Configure AWS credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+        run: |
+
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+
+          aws configure set region $AWS_REGION
+          
+      - name: Serverless AWS authentication
+        run: sls config credentials --provider aws --key ${{ secrets.ACCESS_KEY_ID }} --secret ${{ secrets.SECRET_ACCESS_KEY }}
+      - name: build codepipelinemonitoring
+        working-directory: ./codepipelinemonitoring
+        run: |
+          npm install
+          STAGE=${{ env.TARGET }} sls deploy

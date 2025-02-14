@@ -33,7 +33,7 @@ resource "aws_cloudwatch_event_rule" "my_event_rule" {
 resource "aws_cloudwatch_event_target" "my_event_target" {
   rule      = aws_cloudwatch_event_rule.my_event_rule.name
   target_id = "my-lambda-target"
-  arn       = "arn:aws:lambda:ap-south-1:248189941331:function:codepipeline_monitoring"
+  arn       = "arn:aws:lambda:ap-south-1:248189941331:function:codepipelinemonitoring"
 
   # Optional: Pass specific input to the target (e.g., EventBridge event)
   input = jsonencode({

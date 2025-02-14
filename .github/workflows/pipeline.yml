@@ -6,7 +6,8 @@ on:
 env:
   TARGET: dev
   RESOURCE_NAME: my-nonprod-provision
-  AWS_REGION: eu-west-1
+  AWS_REGION: ap-south-1
+  stage: ${env:TARGET}  # Get the stage from the environment variable TARGET
 
 jobs:
   terraform:

@@ -1,40 +1,42 @@
-# "service" is the name of this project. This will also be added to your AWS resource names.
 service: codepipelinemonitoring
 frameworkVersion: '3'
 
+env:
+  TARGET: dev
 
 provider:
   name: aws
-  stage: ${env:STAGE}
-  region: ap-south-1
+  stage: dev  # Get the stage from the environment variable TARGET
+  region: ap-south-1  # Use AWS_REGION from the environment variables
   runtime: python3.12
   timeout: 900
   environment:
     TARGET_CLUSTER: my-company
-    MONITORING_BUCKET: ${ssm:/vodasure/${env:STAGE}/s3/monitoring_bucket/name}
+    # Uncomment if using SSM variable
+    # MONITORING_BUCKET: ${ssm:/vodasure/${env:TARGET}/s3/monitoring_bucket/name}
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - ssm:*
+        # - ssm:*
         - logs:*
-        - ssmmessages:*
-        - ec2messages:*
+        # - ssmmessages:*
+        # - ec2messages:*
         - cloudwatch:*
-        - s3:*
+        # - s3:*
         - lambda:*
-        - synthetics:*
+        # - synthetics:*
       Resource: 
         - "*"
 
 tags:
-    Name: my-canary-monitoring
-    Environment: ${env:STAGE}
-    Project: Mycompany
-    # ManagedBy: vfsinsurancedevops@vodacom.co.za
-    # SecurityZone: D1
-    # Confidentiality: C3
-    # TaggingVersion: v2.0
-    # BusinessService: VODASURE:APPL:ZA:DEV
+  Name: my-monitoring
+  Project: Mycompany
+  # Uncomment and fill in if necessary:
+  # ManagedBy: vfsinsurancedevops@vodacom.co.za
+  # SecurityZone: D1
+  # Confidentiality: C3
+  # TaggingVersion: v2.0
+  # BusinessService: VODASURE:APPL:ZA:DEV
 
 functions:
   codepipelinecron:
@@ -46,6 +48,7 @@ functions:
               - "aws.codepipeline"
             detail-type:
               - "CodePipeline Pipeline Execution State Change"
+            # Uncomment and use if you want to filter by state or status
             # detail:
             #   state:
             #     - "STOPPED"
@@ -53,26 +56,19 @@ functions:
             #     - "PASSED"
             #     - "FAILED"
 
-
+# Uncomment and use this if you need SSM fetching for monitoring bucket
 # custom:
 #   serverlessSsmFetch:
-#     MONITORING_BUCKET: /vodasure/${env:STAGE}/s3/monitoring_bucket/name
+#     MONITORING_BUCKET: /vodasure/${env:TARGET}/s3/monitoring_bucket/name
 
-
-  # syntheticsDTAnalysis:
-  #   handler: trigger.run
-  #   events:
-  #     - s3:
-  #         bucket: ${ssm:/vodasure/${env:STAGE}/s3/monitoring_bucket/name}
-  #         existing: true
-  #         event: s3:ObjectCreated:*
-  #         rules:
-  #           - prefix: synthentics
-
+# Uncomment for additional synthetics functions if needed
 # functions:
-#   hello:
-#     handler: handler.hello
+#   syntheticsDTAnalysis:
+#     handler: trigger.run
 #     events:
-#       - httpApi:
-#           path: /
-#           method: get
+#       - s3:
+#           bucket: ${ssm:/vodasure/${env:TARGET}/s3/monitoring_bucket/name}
+#           existing: true
+#           event: s3:ObjectCreated:*
+#           rules:
+#             - prefix: synthetics

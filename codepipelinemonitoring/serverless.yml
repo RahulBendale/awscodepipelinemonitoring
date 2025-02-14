@@ -1,0 +1,78 @@
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: codepipelinemonitoring
+frameworkVersion: '3'
+
+
+provider:
+  name: aws
+  stage: ${env:STAGE}
+  region: ap-south-1
+  runtime: python3.12
+  timeout: 900
+  environment:
+    TARGET_CLUSTER: my-company
+    MONITORING_BUCKET: ${ssm:/vodasure/${env:STAGE}/s3/monitoring_bucket/name}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ssm:*
+        - logs:*
+        - ssmmessages:*
+        - ec2messages:*
+        - cloudwatch:*
+        - s3:*
+        - lambda:*
+        - synthetics:*
+      Resource: 
+        - "*"
+
+tags:
+    Name: my-canary-monitoring
+    Environment: ${env:STAGE}
+    Project: Mycompany
+    # ManagedBy: vfsinsurancedevops@vodacom.co.za
+    # SecurityZone: D1
+    # Confidentiality: C3
+    # TaggingVersion: v2.0
+    # BusinessService: VODASURE:APPL:ZA:DEV
+
+functions:
+  codepipelinecron:
+    handler: handler.hello
+    events:
+      - eventBridge:
+          pattern:
+            source:
+              - "aws.codepipeline"
+            detail-type:
+              - "CodePipeline Pipeline Execution State Change"
+            # detail:
+            #   state:
+            #     - "STOPPED"
+            #   test-run-status:
+            #     - "PASSED"
+            #     - "FAILED"
+
+
+# custom:
+#   serverlessSsmFetch:
+#     MONITORING_BUCKET: /vodasure/${env:STAGE}/s3/monitoring_bucket/name
+
+
+  # syntheticsDTAnalysis:
+  #   handler: trigger.run
+  #   events:
+  #     - s3:
+  #         bucket: ${ssm:/vodasure/${env:STAGE}/s3/monitoring_bucket/name}
+  #         existing: true
+  #         event: s3:ObjectCreated:*
+  #         rules:
+  #           - prefix: synthentics
+
+# functions:
+#   hello:
+#     handler: handler.hello
+#     events:
+#       - httpApi:
+#           path: /
+#           method: get

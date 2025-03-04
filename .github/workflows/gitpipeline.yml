@@ -69,7 +69,7 @@ jobs:
         working-directory: ./iac
 
       - name: Navigate to Serverless Service Directory
-        run: cd ./codepipelinemonitoring/
+        run: cd codepipelinemonitoring/
       
       - name: List files in the current directory
         run: ls -al

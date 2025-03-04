@@ -69,7 +69,7 @@ jobs:
         working-directory: ./iac
 
       - name: Navigate to Serverless Service Directory
-        run: cd ./codepipelinemonitoring
+        run: cd ./codepipelinemonitoring/
       
       - name: List files in the current directory
         run: ls -al
@@ -89,7 +89,7 @@ jobs:
       - name: Serverless AWS authentication
         run: sls config credentials --provider aws --key ${{ secrets.ACCESS_KEY_ID }} --secret ${{ secrets.SECRET_ACCESS_KEY }}
       - name: build codepipelinemonitoring
-        working-directory: ./codepipelinemonitoring
+        working-directory: ./codepipelinemonitoring/
         run: |
           npm install
           STAGE=${{ env.TARGET }} sls deploy

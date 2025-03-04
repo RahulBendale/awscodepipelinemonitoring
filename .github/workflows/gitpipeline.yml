@@ -48,6 +48,7 @@ jobs:
       #   run: ./init_state_management.sh ${{ env.RESOURCE_NAME }} ${{ env.AWS_REGION }}
       #   working-directory: ./scripts
       #
+      
       - name: Transform Infrastructure Values
         id: transform_infrastructure_values
         run: |

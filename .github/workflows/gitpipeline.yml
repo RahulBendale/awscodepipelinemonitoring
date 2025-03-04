@@ -72,6 +72,9 @@ jobs:
         run: |
           pwd
           cd codepipelinemonitoring/
+          pwd
+          ls -al
+        working-directory: ./codepipelinemonitoring/
       
       - name: List files in the current directory
         run: ls -al

@@ -38,6 +38,7 @@ tags:
   # TaggingVersion: v2.0
   # BusinessService: VODASURE:APPL:ZA:DEV
 
+
 functions:
   codepipelineMonitoring:
     handler: handler.hello
@@ -65,7 +66,7 @@ resources:
       Properties:
         Name: my-event-bus
 
-        
+
 # Uncomment and use this if you need SSM fetching for monitoring bucket
 # custom:
 #   serverlessSsmFetch:

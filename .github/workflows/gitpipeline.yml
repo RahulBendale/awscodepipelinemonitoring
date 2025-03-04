@@ -68,7 +68,7 @@ jobs:
         working-directory: ./iac
 
       - name: Navigate to Serverless Service Directory
-        run: cd /home/runner/work/AWS-CodePipeline-eventbridge/AWS-CodePipeline-eventbridge
+        run: cd ./src
       
 
       - name: Configure AWS credentials

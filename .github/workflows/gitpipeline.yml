@@ -68,6 +68,7 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./iac
 
+        
       # - name: Navigate to Serverless Service Directory
       #   run: |
       #     pwd

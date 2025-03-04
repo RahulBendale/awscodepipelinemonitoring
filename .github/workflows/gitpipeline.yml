@@ -68,14 +68,10 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./iac
 
-        
-      # - name: Navigate to Serverless Service Directory
-      #   run: |
-      #     pwd
-      #     cd ./codepipelinemonitoring/
-      #     pwd
-      #     ls -al
-      #   working-directory: ./codepipelinemonitoring/
+
+      - name: Navigate to Serverless Service Directory
+        run: pwd
+        working-directory: ./codepipelinemonitoring/
       
       - name: List files in the current directory
         run: |

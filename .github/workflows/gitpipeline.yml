@@ -71,7 +71,7 @@ jobs:
       - name: Navigate to Serverless Service Directory
         run: |
           pwd
-          cd codepipelinemonitoring/
+          cd ./codepipelinemonitoring/
           pwd
           ls -al
         working-directory: ./codepipelinemonitoring/

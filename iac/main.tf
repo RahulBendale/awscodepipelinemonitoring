@@ -27,25 +27,25 @@ resource "aws_cloudwatch_event_rule" "my_event_rule" {
   )
 }
 
-# 3. Create a target for the EventBridge rule (e.g., Lambda function)
-# Assume we have an AWS Lambda function already created (referenced here by ARN)
+# # 3. Create a target for the EventBridge rule (e.g., Lambda function)
+# # Assume we have an AWS Lambda function already created (referenced here by ARN)
 
-resource "aws_cloudwatch_event_target" "my_event_target" {
-  rule      = aws_cloudwatch_event_rule.my_event_rule.name
-  target_id = "my-lambda-target"
-  arn       = "arn:aws:lambda:ap-south-1:248189941331:function:codepipelinemonitoring"
+# resource "aws_cloudwatch_event_target" "my_event_target" {
+#   rule      = aws_cloudwatch_event_rule.my_event_rule.name
+#   target_id = "my-lambda-target"
+#   arn       = "arn:aws:lambda:ap-south-1:248189941331:function:codepipelinemonitoring"
 
-  # Optional: Pass specific input to the target (e.g., EventBridge event)
-  input = jsonencode({
-    message = "Event received!"
-  })
-}
+#   # Optional: Pass specific input to the target (e.g., EventBridge event)
+#   input = jsonencode({
+#     message = "Event received!"
+#   })
+# }
 
-# 4. Grant permissions to EventBridge to invoke Lambda (if using Lambda target)
-resource "aws_lambda_permission" "allow_eventbridge_invocation" {
-  statement_id  = "AllowExecutionFromEventBridge"
-  action        = "lambda:InvokeFunction"
-  function_name = "codepipeline_monitoring"
-  principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.my_event_rule.arn
-}
+# # 4. Grant permissions to EventBridge to invoke Lambda (if using Lambda target)
+# resource "aws_lambda_permission" "allow_eventbridge_invocation" {
+#   statement_id  = "AllowExecutionFromEventBridge"
+#   action        = "lambda:InvokeFunction"
+#   function_name = "codepipeline_monitoring"
+#   principal     = "events.amazonaws.com"
+#   source_arn    = aws_cloudwatch_event_rule.my_event_rule.arn
+# }

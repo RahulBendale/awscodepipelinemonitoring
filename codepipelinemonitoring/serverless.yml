@@ -39,7 +39,7 @@ tags:
   # BusinessService: VODASURE:APPL:ZA:DEV
 
 functions:
-  codepipelinecron:
+  codepipelineMonitoring:
     handler: handler.hello
     events:
       - eventBridge:
@@ -48,6 +48,8 @@ functions:
               - "aws.codepipeline"
             detail-type:
               - "CodePipeline Pipeline Execution State Change"
+          target:
+            arn: arn:aws:lambda:ap-south-1:248189941331:function:codepipelineMonitoring
             # Uncomment and use if you want to filter by state or status
             # detail:
             #   state:
@@ -56,6 +58,14 @@ functions:
             #     - "PASSED"
             #     - "FAILED"
 
+resources:
+  Resources:
+    MyEventBus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: my-event-bus
+
+        
 # Uncomment and use this if you need SSM fetching for monitoring bucket
 # custom:
 #   serverlessSsmFetch:

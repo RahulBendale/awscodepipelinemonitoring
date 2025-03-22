@@ -59,12 +59,12 @@ functions:
             #     - "PASSED"
             #     - "FAILED"
 
-resources:
-  Resources:
-    MyEventBus:
-      Type: AWS::Events::EventBus
-      Properties:
-        Name: my-event-bus
+# resources:
+#   Resources:
+#     MyEventBus:
+#       Type: AWS::Events::EventBus
+#       Properties:
+#         Name: my-event-bus
 
 
 # Uncomment and use this if you need SSM fetching for monitoring bucket

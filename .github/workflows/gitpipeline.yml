@@ -105,5 +105,11 @@ jobs:
       - name: build codepipelinemonitoring
         working-directory: ./codepipelinemonitoring
         run: |
+          echo "Current directory: $(pwd)"
+          echo "Listing files:"
+          ls -al
+          
+          echo "Running npm install..."
           npm install
+          echo "Deploying with stage: $STAGE"
           STAGE=${{ env.TARGET }} sls deploy

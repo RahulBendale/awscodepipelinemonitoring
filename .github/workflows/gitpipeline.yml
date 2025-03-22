@@ -44,6 +44,9 @@ jobs:
             host: github.com
             private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Grant execute permission for init_state_management.sh
+        run: chmod +x ./scripts/init_state_management.sh
+
       - name: Configure and Run Terraform state management prerequideves
         id: terraform_run_state
         run: ./init_state_management.sh ${{ env.RESOURCE_NAME }} ${{ env.AWS_REGION }}

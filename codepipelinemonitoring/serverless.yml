@@ -1,5 +1,5 @@
 service: codepipelinemonitoring
-frameworkVersion: '3'
+frameworkVersion: '4'
 
 env:
   TARGET: dev

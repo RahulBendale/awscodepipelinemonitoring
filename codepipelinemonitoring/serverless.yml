@@ -83,3 +83,4 @@ functions:
 #           event: s3:ObjectCreated:*
 #           rules:
 #             - prefix: synthetics
+

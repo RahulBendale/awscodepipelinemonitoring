@@ -1,8 +1,5 @@
 service: codepipelinemonitoring
-frameworkVersion: '4'
-
-env:
-  TARGET: dev
+frameworkVersion: '3'
 
 provider:
   name: aws
@@ -12,31 +9,22 @@ provider:
   timeout: 900
   environment:
     TARGET_CLUSTER: my-company
-    # Uncomment if using SSM variable
-    # MONITORING_BUCKET: ${ssm:/vodasure/${env:TARGET}/s3/monitoring_bucket/name}
   iamRoleStatements:
     - Effect: Allow
       Action:
-        # - ssm:*
         - logs:*
-        # - ssmmessages:*
-        # - ec2messages:*
         - cloudwatch:*
-        # - s3:*
         - lambda:*
-        # - synthetics:*
       Resource: 
         - "*"
 
-tags:
-  Name: my-monitoring
-  Project: Mycompany
-  # Uncomment and fill in if necessary:
-  # ManagedBy: vfsinsurancedevops@vodacom.co.za
-  # SecurityZone: D1
-  # Confidentiality: C3
-  # TaggingVersion: v2.0
-  # BusinessService: VODASURE:APPL:ZA:DEV
+  enviroment:
+    TARGET: dev
+
+
+  tags:
+    Name: my-monitoring
+    Project: Mycompany
 
 
 functions:
@@ -51,36 +39,3 @@ functions:
               - "CodePipeline Pipeline Execution State Change"
           target:
             arn: arn:aws:lambda:ap-south-1:248189941331:function:codepipelineMonitoring
-            # Uncomment and use if you want to filter by state or status
-            # detail:
-            #   state:
-            #     - "STOPPED"
-            #   test-run-status:
-            #     - "PASSED"
-            #     - "FAILED"
-
-# resources:
-#   Resources:
-#     MyEventBus:
-#       Type: AWS::Events::EventBus
-#       Properties:
-#         Name: my-event-bus
-
-
-# Uncomment and use this if you need SSM fetching for monitoring bucket
-# custom:
-#   serverlessSsmFetch:
-#     MONITORING_BUCKET: /vodasure/${env:TARGET}/s3/monitoring_bucket/name
-
-# Uncomment for additional synthetics functions if needed
-# functions:
-#   syntheticsDTAnalysis:
-#     handler: trigger.run
-#     events:
-#       - s3:
-#           bucket: ${ssm:/vodasure/${env:TARGET}/s3/monitoring_bucket/name}
-#           existing: true
-#           event: s3:ObjectCreated:*
-#           rules:
-#             - prefix: synthetics
-

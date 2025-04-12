@@ -101,9 +101,7 @@ jobs:
           
 
       - name: Serverless AWS authentication
-        run: |
-          - cd ../codepipelinemonitoring
-          -  sls config credentials --provider aws --key ${{ secrets.ACCESS_KEY_ID }} --secret ${{ secrets.SECRET_ACCESS_KEY }} --profile default --overwrite
+        run: sls config credentials --provider aws --key ${{ secrets.ACCESS_KEY_ID }} --secret ${{ secrets.SECRET_ACCESS_KEY }} --profile default --overwrite
 
       - name: build codepipelinemonitoring
         working-directory: ./codepipelinemonitoring
